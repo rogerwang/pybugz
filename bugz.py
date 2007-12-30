@@ -41,212 +41,7 @@ COOKIE_FILE = '.bugz_cookie'
 CONFIG_FILE = '.bugz'
 DEFAULT_NUM_COLS = 80
 
-
-class BugzConfig:
-    urls = {
-        'auth': 'index.cgi',
-        'list': 'buglist.cgi',
-        'show': 'show_bug.cgi',
-        'attach': 'attachment.cgi',
-        'post': 'post_bug.cgi',
-        'modify': 'process_bug.cgi',
-        'attach_post': 'attachment.cgi',
-    }
-
-    headers = {
-        'Accept': '*/*',
-        'User-agent': BUGZ_USER_AGENT,
-    }
-
-    params = {
-        'auth': {
-        "Bugzilla_login": "",
-        "Bugzilla_password": "",
-        "GoAheadAndLogIn": "1",
-        },
-
-        'post': {
-        'product': 'Gentoo Linux',
-        'version': 'unspecified',
-        'rep_platform': 'All',
-        'op_sys': 'Linux',
-        'priority': 'P3',
-        'bug_severity': 'enhancement',
-        'bug_status': 'NEW',
-        'assigned_to': '',
-        'keywords': '',
-        'dependson':'',
-        'blocked':'',
-        'component': 'Ebuilds',
-        # needs to be filled in
-        'bug_file_loc': '',
-        'short_desc': '',
-        'comment': '',
-        },
-
-        'attach': {
-        'id':''
-        },
-
-        'attach_post': {
-        'action': 'insert',
-        'contenttypemethod': 'manual',
-        'bugid': '',
-        'description': '',
-        'contenttypeentry': 'text/plain',
-        'comment': '',
-        },
-
-        'show': {
-        'id': '',
-        'ctype': 'xml'
-        },
-
-        'list': {
-        'query_format': 'advanced',
-        'short_desc_type': 'allwordssubstr',
-        'short_desc': '',
-        'long_desc_type': 'substring',
-        'long_desc' : '',
-        'bug_file_loc_type': 'allwordssubstr',
-        'bug_file_loc': '',
-        'status_whiteboard_type': 'allwordssubstr',
-        'status_whiteboard': '',
-        'bug_status': ['NEW', 'ASSIGNED', 'REOPENED'],
-        'bug_severity': [],
-        'priority': [],
-        'emaillongdesc1': '1',
-        'emailassigned_to1':'1',
-        'emailtype1': 'substring',
-        'email1': '',
-        'emaillongdesc2': '1',
-        'emailassigned_to2':'1',
-        'emailreporter2':'1',
-        'emailcc2':'1',
-        'emailtype2':'substring',
-        'email2':'',
-        'bugidtype':'include',
-        'bug_id':'',
-        'chfieldfrom':'',
-        'chfieldto':'Now',
-        'chfieldvalue':'',
-        'cmdtype':'doit',
-        'order': 'Bug Number',
-        'field0-0-0':'noop',
-        'type0-0-0':'noop',
-        'value0-0-0':'',
-        'ctype':'csv',
-        },
-
-        'modify': {
-        #    'delta_ts': '%Y-%m-%d %H:%M:%S',
-        'longdesclength': '1',
-        'id': '',
-        'newcc': '',
-        'removecc': '',  # remove selected cc's if set
-        'cc': '',        # only if there are already cc's
-        'bug_file_loc': '',
-        'bug_severity': '',
-        'bug_status': '',
-        'op_sys': '',
-        'priority': '',
-        'version': '',
-        'target_milestone': '',
-        'rep_platform': '',
-        'product':'',
-        'component': '',
-        'short_desc': '',
-        'status_whiteboard': '',
-        'keywords': '',
-        'dependson': '',
-        'blocked': '',
-        'knob': ('none', 'assigned', 'resolve', 'duplicate', 'reassign'),
-        'resolution': '', # only valid for knob=resolve
-        'dup_id': '',     # only valid for knob=duplicate
-        'assigned_to': '',# only valid for knob=reassign
-        'form_name': 'process_bug',
-        'comment':''
-        }
-
-    }
-
-    choices = {
-        'status': {
-        'unconfirmed': 'UNCONFIRMED',
-        'new': 'NEW',
-        'assigned': 'ASSIGNED',
-        'reopened': 'REOPENED',
-        'resolved': 'RESOLVED',
-        'verified': 'VERIFIED',
-        'closed':   'CLOSED'
-        },
-
-        'order': {
-        'number' : 'Bug Number',
-        'assignee': 'Assignee',
-        'importance': 'Importance',
-        'date': 'Last Changed'
-        },
-
-        'columns': [
-        'bugid',
-        'alias',
-        'severity',
-        'priority',
-        'arch',
-        'assignee',
-        'status',
-        'resolution',
-        'desc'
-        ],
-
-        'column_alias': {
-        'bug_id': 'bugid',
-        'alias': 'alias',
-        'bug_severity': 'severity',
-        'priority': 'priority',
-        'op_sys': 'arch', #XXX: Gentoo specific?
-        'assigned_to': 'assignee',
-        'assigned_to_realname': 'assignee', #XXX: Distinguish from assignee?
-        'bug_status': 'status',
-        'resolution': 'resolution',
-        'short_desc': 'desc',
-        'short_short_desc': 'desc',
-        },
-        # Novell: bug_id,"bug_severity","priority","op_sys","bug_status","resolution","short_desc"
-        # Gentoo: bug_id,"bug_severity","priority","op_sys","assigned_to","bug_status","resolution","short_short_desc"
-        # Redhat: bug_id,"alias","bug_severity","priority","rep_platform","assigned_to","bug_status","resolution","short_short_desc"
-        # Mandriva: 'bug_id', 'bug_severity', 'priority', 'assigned_to_realname', 'bug_status', 'resolution', 'keywords', 'short_desc'
-
-        'resolution': {
-        'fixed': 'FIXED',
-        'invalid': 'INVALID',
-        'duplicate': 'DUPLICATE',
-        'lated': 'LATER',
-        'needinfo': 'NEEDINFO',
-        'wontfix': 'WONTFIX',
-        'upstream': 'UPSTREAM',
-        },
-
-        'severity': [
-        'blocker',
-        'critical',
-        'major',
-        'normal',
-        'minor',
-        'trivial',
-        'enhancement',
-        ],
-
-        'priority': {
-        1:'P1',
-        2:'P2',
-        3:'P3',
-        4:'P4',
-        5:'P5',
-        }
-
-    }
+DEBUG = True
 
 import csv
 import os
@@ -275,10 +70,12 @@ except ImportError:
 # Global configuration
 #
 
+from config import load_config_by_url
+
 try:
     config
 except NameError:
-    config = BugzConfig()
+    config = load_config_by_url()
 
 #
 # Auxillary functions
@@ -635,6 +432,15 @@ class Bugz:
         """
         return
 
+    def debug(self, debug_msg):
+        """Default logging handler. Expected to be overriden by
+        the UI implementing subclass.
+
+        @param debug_msg: debug message to print
+        @type  debug_msg: string
+        """
+        return
+
     def warn(self, warn_msg):
         """Default logging handler. Expected to be overridden by
         the UI implementing subclass.
@@ -666,9 +472,10 @@ class Bugz:
         except IOError:
             pass
 
-        req_url = urljoin(self.base, config.urls['auth'])
+        req_url = urljoin(self.base, config['urls']['auth'])
         req_url += '?GoAheadAndLogIn=1'
-        req = Request(req_url, None, config.headers)
+        self.debug('Requesting %s' % req_url)
+        req = Request(req_url, None, config['headers'])
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
             req.add_header("Authorization", "Basic %s" % base64string)
@@ -687,12 +494,12 @@ class Bugz:
             self.password = getpass.getpass()
 
         # perform login
-        qparams = config.params['auth'].copy()
+        qparams = config['params']['auth'].copy()
         qparams['Bugzilla_login'] = self.user
         qparams['Bugzilla_password'] = self.password
 
-        req_url = urljoin(self.base, config.urls['auth'])
-        req = Request(req_url, urlencode(qparams), config.headers)
+        req_url = urljoin(self.base, config['urls']['auth'])
+        req = Request(req_url, urlencode(qparams), config['headers'])
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
             req.add_header("Authorization", "Basic %s" % base64string)
@@ -750,19 +557,19 @@ class Bugz:
         @rtype: list of dicts
         """
 
-        qparams = config.params['list'].copy()
+        qparams = config['params']['list'].copy()
         if comments:
             qparams['long_desc'] = query
         else:
             qparams['short_desc'] = query
 
-        qparams['order'] = config.choices['order'].get(order, 'Bug Number')
+        qparams['order'] = config['choices']['order'].get(order, 'Bug Number')
         qparams['bug_severity'] = severity or []
         qparams['priority'] = priority or []
         if status == None:
             qparams['bug_status'] = ['NEW', 'ASSIGNED', 'REOPENED']
         elif [s.upper() for s in status] == ['ALL']:
-            qparams['bug_status'] = config.choices['status']
+            qparams['bug_status'] = config['choices']['status']
         else:
             qparams['bug_status'] = [s.upper() for s in status]
         qparams['product'] = product or ''
@@ -789,9 +596,10 @@ class Bugz:
                                  'reporter in the same query')
 
         req_params = urlencode(qparams, True)
-        req_url = urljoin(self.base, config.urls['list'])
+        req_url = urljoin(self.base, config['urls']['list'])
         req_url += '?' + req_params
-        req = Request(req_url, None, config.headers)
+        self.debug('Requesting %s' % req_url)
+        req = Request(req_url, None, config['headers'])
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
             req.add_header("Authorization", "Basic %s" % base64string)
@@ -803,8 +611,8 @@ class Bugz:
         rows = []
         for r in csv.reader(resp): rows.append(r)
         for field in rows[0]:
-            if config.choices['column_alias'].has_key(field):
-                columns.append(config.choices['column_alias'][field])
+            if config['choices']['column_alias'].has_key(field):
+                columns.append(config['choices']['column_alias'][field])
             else:
                 self.log('Unknown field: ' + field)
                 columns.append(field)
@@ -824,13 +632,14 @@ class Bugz:
 
         @rtype: ElementTree
         """
-        qparams = config.params['show'].copy()
+        qparams = config['params']['show'].copy()
         qparams['id'] = bugid
 
         req_params = urlencode(qparams, True)
-        req_url = urljoin(self.base,  config.urls['show'])
+        req_url = urljoin(self.base,  config['urls']['show'])
         req_url += '?' + req_params
-        req = Request(req_url, None, config.headers)
+        self.debug('Requesting %s' % req_url)
+        req = Request(req_url, None, config['headers'])
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
             req.add_header("Authorization", "Basic %s" % base64string)
@@ -907,7 +716,7 @@ class Bugz:
 
         import time
         modified = []
-        qparams = config.params['modify'].copy()
+        qparams = config['params']['modify'].copy()
         qparams['id'] = bugid
         qparams['knob'] = 'none'
 
@@ -1024,8 +833,9 @@ class Bugz:
             modified.append(('keywords', keywords))
 
         req_params = urlencode(qparams, True)
-        req_url = urljoin(self.base, config.urls['modify'])
-        req = Request(req_url, req_params, config.headers)
+        req_url = urljoin(self.base, config['urls']['modify'])
+        self.debug('Requesting %s' % req_url)
+        req = Request(req_url, req_params, config['headers'])
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
             req.add_header("Authorization", "Basic %s" % base64string)
@@ -1045,13 +855,14 @@ class Bugz:
         @return: dict with three keys, 'filename', 'size', 'fd'
         @rtype: dict
         """
-        qparams = config.params['attach'].copy()
+        qparams = config['params']['attach'].copy()
         qparams['id'] = attachid
 
         req_params = urlencode(qparams, True)
-        req_url = urljoin(self.base, config.urls['attach'])
+        req_url = urljoin(self.base, config['urls']['attach'])
         req_url += '?' + req_params
-        req = Request(req_url, None, config.headers)
+        self.debug('Requesting %s' % req_url)
+        req = Request(req_url, None, config['headers'])
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
             req.add_header("Authorization", "Basic %s" % base64string)
@@ -1088,7 +899,7 @@ class Bugz:
         if not self.authenticated:
             self.auth()
 
-        qparams = config.params['post'].copy()
+        qparams = config['params']['post'].copy()
         qparams['short_desc'] = title
         qparams['comment'] = description
         qparams['assigned_to']  = assigned_to
@@ -1097,8 +908,9 @@ class Bugz:
         qparams['keywords'] = keywords
 
         req_params = urlencode(qparams, True)
-        req_url = urljoin(self.base, config.urls['post'])
-        req = Request(req_url, req_params, config.headers)
+        req_url = urljoin(self.base, config['urls']['post'])
+        self.debug('Requesting %s' % req_url)
+        req = Request(req_url, req_params, config['headers'])
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
             req.add_header("Authorization", "Basic %s" % base64string)
@@ -1135,7 +947,7 @@ class Bugz:
         if not self.authenticated:
             self.auth()
 
-        qparams = config.params['attach_post'].copy()
+        qparams = config['params']['attach_post'].copy()
         qparams['bugid'] = bugid
         qparams['description'] = title
         qparams['comment'] = description
@@ -1145,10 +957,11 @@ class Bugz:
         content_type, body = encode_multipart_formdata(qparams.items(),
                                                        filedata)
 
-        req_headers = config.headers.copy()
+        req_headers = config['headers'].copy()
         req_headers['Content-type'] = content_type
         req_headers['Content-length'] = len(body)
-        req_url = urljoin(self.base, config.urls['attach_post'])
+        req_url = urljoin(self.base, config['urls']['attach_post'])
+        self.debug('Requesting %s' % req_url)
         req = Request(req_url, body, req_headers)
         if self.httpuser and self.httppassword:
             base64string = base64.encodestring('%s:%s' % (self.httpuser, self.httppassword))[:-1]
@@ -1220,6 +1033,10 @@ class PrettyBugz(Bugz):
             else:
                 print ' * %s' % status_msg,
 
+    def debug(self, debug_msg):
+        if DEBUG is True:
+            print ' $ DEBUG: %s' % debug_msg
+
     def warn(self, warn_msg):
         if not self.quiet:
             print ' ! Warning: %s' % warn_msg
@@ -1270,7 +1087,7 @@ class PrettyBugz(Bugz):
     search.args = "<search term> [options..]"
     search.options = {
         'order': make_option('-o', '--order', type='choice',
-                             choices = config.choices['order'].keys(),
+                             choices = config['choices']['order'].keys(),
                              default = 'number'),
         'assigned_to': make_option('-a', '--assigned-to',
                                 help = 'email the bug is assigned to'),
@@ -1282,10 +1099,10 @@ class PrettyBugz(Bugz):
                               help = 'Bug status (for multiple choices,'
                               'use --status=NEW --status=ASSIGNED)'),
         'severity': make_option('--severity', action='append',
-                                choices = config.choices['severity'],
+                                choices = config['choices']['severity'],
                                 help = 'Restrict by severity.'),
         'priority': make_option('--priority', action='append',
-                                choices = config.choices['priority'].values(),
+                                choices = config['choices']['priority'].values(),
                                 help = 'Restrict by priority (1 or more)'),
         'comments': make_option('-c', '--comments',  action='store_true',
                                 help = 'Search comments instead of title'),
@@ -1327,6 +1144,8 @@ class PrettyBugz(Bugz):
             ('bug_severity', 'Severity'),
             ('priority', 'Priority'),
             ('reporter', 'Reporter'),
+            ('rep_platform', 'Hardware'),
+            ('op_sys', 'OS'),
         )
 
         MORE_FIELDS = (
@@ -1340,7 +1159,7 @@ class PrettyBugz(Bugz):
             try:
                 value = result.find('//%s' % field).text
             except AttributeError:
-                continue
+                self.debug('Field not found: %s' % field)
             print '%-12s: %s' % (name, value.encode(self.enc))
 
         # Print out the cc'ed people
@@ -1362,7 +1181,7 @@ class PrettyBugz(Bugz):
         print '%-12s: %d' % ('Comments', len(bug_comments))
         print '%-12s: %d' % ('Attachments', len(bug_attachments))
         print '%-12s: %s' % ('URL', '%s?id=%s' % (urljoin(self.base,
-                                                    config.urls['show']),
+                                                    config['urls']['show']),
                                                     bugid))
         print
 
@@ -1422,7 +1241,7 @@ class PrettyBugz(Bugz):
         #       and "if <field> is None" for optional ones.
         #
 
-	# check for title
+        # check for title
         if not title:
             while not title or len(title) < 1:
                 title = self.get_input('Enter title: ')
@@ -1564,15 +1383,15 @@ class PrettyBugz(Bugz):
         'comment': make_option('-c', '--comment', help = 'Add comment to bug'),
         'url': make_option('-U', '--url', help = 'Set URL field of bug'),
         'status': make_option('-s', '--status',
-                              choices=config.choices['status'].values(),
-                              help = 'Set new status of bug (eg. RESOLVED)'),
+                              choices=config['choices']['status'].values(),
+                              help = 'Set new status of bug (eg. RiESOLVED)'),
         'resolution': make_option('-r', '--resolution',
-                                  choices=config.choices['resolution'].values(),
+                                  choices=config['choices']['resolution'].values(),
                                   help = 'Set new resolution (only if status = RESOLVED)'),
         'assigned_to': make_option('-a', '--assigned-to'),
         'duplicate': make_option('-d', '--duplicate', type='int', default=0),
         'priority': make_option('--priority', 
-                                choices=config.choices['priority'].values()),
+                                choices=config['choices']['priority'].values()),
         'severity': make_option('-S', '--severity'),
         'fixed': make_option('--fixed', action='callback',
                              callback = modify_opt_fixed,
