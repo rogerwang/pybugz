@@ -199,3 +199,6 @@ choices:
         4: P4,
         5: P5,
         }
+
+post_extra_info:
+    "emerge --info": "emerge --info"

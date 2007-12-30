@@ -36,7 +36,6 @@ BUGZ: Any line beginning with 'BUGZ:' will be ignored.
 BUGZ: ---------------------------------------------------
 """
 
-EMERGE = "/usr/bin/emerge"
 COOKIE_FILE = '.bugz_cookie'
 CONFIG_FILE = '.bugz'
 DEFAULT_NUM_COLS = 80
@@ -1261,7 +1260,7 @@ class PrettyBugz(Bugz):
     }
 
     def post(self, title = None, description = None, assigned_to = None,
-             cc = None, url = None, keywords = None, emerge_info = None,
+             cc = None, url = None, keywords = None, extra_info = None,
              description_from = None):
         """Post a new bug"""
         # As we are submitting something, we should really
@@ -1337,15 +1336,19 @@ class PrettyBugz(Bugz):
         print description
         print '-' * (self.columns - 1)
 
-        if emerge_info == None:
-            ask_emerge = raw_input('Include output of emerge --info (Y/n)?')
-            if ask_emerge[0] in ('y', 'Y'):
-                emerge_info = True
+        # extra info
+        if 'post_extra_info' in config and extra_info is None:
+            extra_info = ''
+            for extra in config['post_extra_info']:
+                ask_extra = raw_input('Include output of %s (Y/n)?' % extra)
+                if ask_extra[0] in ('y', 'Y'):
+                    extra_info += extra + ';'
 
-        if emerge_info:
+        if extra_info is not None and extra_info != '':
             import commands
-            emerge_info_output = commands.getoutput('%s --info' % EMERGE)
-            description = description + '\n' + emerge_info_output
+            self.log('Getting extra info output...')
+            self.debug('Extra info command: %s' % extra_info)
+            description += '\n' + commands.getoutput(extra_info)
 
         confirm = raw_input('Confirm bug submission (y/N)?')
         if confirm[0] not in ('y', 'Y'):
@@ -1367,8 +1370,8 @@ class PrettyBugz(Bugz):
         'description_from': make_option('-F' , '--description-from',
                                         help = 'Description from contents of'
                                         ' file'),
-        'emerge_info': make_option('-e', '--emerge-info', action="store_true",
-                                   help = 'Include emerge --info'),
+        'extra_info': make_option('--extra-info',
+                                   help = 'Include extra info (shell command)'),
         'assigned_to': make_option('-a', '--assigned-to',
                                    help = 'Assign bug to someone other than '
                                    'the default assignee'),
