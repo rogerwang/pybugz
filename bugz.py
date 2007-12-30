@@ -76,6 +76,8 @@ try:
     config
 except NameError:
     config = load_config_by_url()
+    if 'User-agent' not in config['headers']:
+        config['headers']['User-agent'] = BUGZ_USER_AGENT
 
 #
 # Auxillary functions
@@ -1078,9 +1080,9 @@ class PrettyBugz(Bugz):
 
         for row in result:
             desc = row['desc'][:self.columns - 30]
-            if row.has_key('assignee'): # Novell does not have 'assignee' field
-                assignee = row['assignee'].split('@')[0]
-                print '%7s %-20s %s' % (row['bugid'], assignee, desc)
+            if row.has_key('assignee'):
+                assignee = row['assignee']
+                print '%7s %-30s %s' % (row['bugid'], assignee, desc)
             else:
                 print '%7s %s' % (row['bugid'], desc)
 
@@ -1143,6 +1145,7 @@ class PrettyBugz(Bugz):
             ('bug_file_loc', 'URL'),
             ('bug_severity', 'Severity'),
             ('priority', 'Priority'),
+            ('target_milestone', 'Target Milestone'),
             ('reporter', 'Reporter'),
             ('rep_platform', 'Hardware'),
             ('op_sys', 'OS'),
@@ -1160,6 +1163,7 @@ class PrettyBugz(Bugz):
                 value = result.find('//%s' % field).text
             except AttributeError:
                 self.debug('Field not found: %s' % field)
+                continue
             print '%-12s: %s' % (name, value.encode(self.enc))
 
         # Print out the cc'ed people
