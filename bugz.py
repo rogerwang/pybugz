@@ -1097,6 +1097,7 @@ class PrettyBugz(Bugz):
 
         fields_trunc = {
                 'severity': 3,
+                'priority': 2,
                 'arch': 4,
                 'status': 8,
                 'resolution': 8,
