@@ -396,6 +396,9 @@ class Bugz:
         @type    always_auth: bool
         """
         self.base = base
+
+        config = load_config_by_url(base)
+
         scheme, self.host, self.path, query, frag  = urlsplit(self.base)
         self.authenticated = False
 
@@ -1097,7 +1100,7 @@ class PrettyBugz(Bugz):
                 'arch': 4,
                 'status': 8,
                 'resolution': 8,
-                'desc': 30,
+                'desc': self.columns - 30,
                 }
 
         for row in result:

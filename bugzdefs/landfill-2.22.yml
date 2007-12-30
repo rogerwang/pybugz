@@ -9,6 +9,7 @@ urls:
     post:   post_bug.cgi
     modify: process_bug.cgi
     attach_post: attachment.cgi
+    describe_keywords: describekeywords.cgi #TODO
 
 headers:
     Accept: '*/*'
