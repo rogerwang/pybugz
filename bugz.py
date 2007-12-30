@@ -555,8 +555,10 @@ class Bugz:
         @keyword component: search within components. empty means all.
         @type    component: list
 
+        @return: list of orderer fields
+        @rtype:  list of strings
         @return: list of bugs, each bug represented as a dict
-        @rtype: list of dicts
+        @rtype:  list of dicts
         """
 
         qparams = config['params']['list'].copy()
@@ -624,7 +626,7 @@ class Bugz:
                 fields[columns[i]] = row[i]
             results.append(fields)
 
-        return results
+        return columns, results
 
     def get(self, bugid):
         """Get an ElementTree representation of a bug.
@@ -1069,7 +1071,7 @@ class PrettyBugz(Bugz):
             self.log(log_msg)
 
 
-        result = Bugz.search(self, search_term, **kwds)
+        fields, result = Bugz.search(self, search_term, **kwds)
 
         if result == None:
             raise RuntimeError('Failed to perform search')
@@ -1078,13 +1080,39 @@ class PrettyBugz(Bugz):
             self.log('No bugs found.')
             return
 
+        #FIXME: Better format and truncate handling.
+        fields_fmt = {
+                'bugid': '%7s',
+                'severity': '%3s',
+                'priority': '%2s',
+                'arch': '%-4s',
+                'assignee': '%-25s',
+                'status': '%-8s',
+                'resolution': '%-8s',
+                'desc': '%-s',
+                }
+
+        fields_trunc = {
+                'severity': 3,
+                'arch': 4,
+                'status': 8,
+                'resolution': 8,
+                'desc': 30,
+                }
+
         for row in result:
-            desc = row['desc'][:self.columns - 30]
-            if row.has_key('assignee'):
-                assignee = row['assignee']
-                print '%7s %-30s %s' % (row['bugid'], assignee, desc)
-            else:
-                print '%7s %s' % (row['bugid'], desc)
+            str = ''
+            for field in fields:
+                #XXX: Truncate some fields
+                if field in fields_trunc:
+                    row[field] = row[field][:fields_trunc[field]]
+                # Add field to string
+                if field in fields_fmt:
+                    str += ' ' + fields_fmt[field] % row[field]
+                else:
+                    str += fields_fmt[field] % ' '
+            print str
+            #XXX: desc = row['desc'][:self.columns - 30]
 
     search.args = "<search term> [options..]"
     search.options = {
