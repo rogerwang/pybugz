@@ -2,10 +2,11 @@ from distutils.core import setup
 
 setup(
     name = 'pybugz',
+    version = '0.8.0',
     author = 'Alastair Tse',
     author_email = 'alastair@liquidx.net',
     url = 'http://pybugz.googlecode.com',
-    version = '0.8.0',
+    description = 'python interface to bugzilla',
     packages = ['bugz'],
     package_data = {'bugz': ['bugzdefs/*']},
     scripts = ['scripts/bugz']
