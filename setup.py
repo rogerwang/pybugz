@@ -9,5 +9,5 @@ setup(
     description = 'python interface to bugzilla',
     packages = ['bugz'],
     package_data = {'bugz': ['bugzdefs/*']},
-    scripts = ['scripts/bugz']
+    scripts = ['bin/bugz']
 )
