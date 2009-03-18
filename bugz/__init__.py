@@ -40,7 +40,6 @@ import os
 import re
 import mimetypes
 import locale
-import commands
 import base64
 import readline
 
@@ -697,9 +696,13 @@ class Bugz:
         except:
             return {}
 
-    def post(self, title, description, url = '', assigned_to = '', cc = '', keywords = ''):
+    def post(self, product, component, title, description, url = '', assigned_to = '', cc = '', keywords = '', version = ''):
         """Post a bug
 
+        @param product: product where the bug should be placed
+        @type product: string
+        @param component: component where the bug should be placed
+        @type component: string
         @param title: title of the bug.
         @type  title: string
         @param description: description of the bug
@@ -712,6 +715,8 @@ class Bugz:
         @type: string
         @keyword keywords: option list of bugzilla keywords
         @type: string
+        @keyword version: version of the component
+        @type: string
 
         @rtype: int
         @return: the bug number, or 0 if submission failed.
@@ -720,12 +725,18 @@ class Bugz:
             self.auth()
 
         qparams = self.config['params']['post'].copy()
+        qparams['product'] = product
+        qparams['component'] = component
         qparams['short_desc'] = title
         qparams['comment'] = description
         qparams['assigned_to']  = assigned_to
         qparams['cc'] = cc
         qparams['bug_file_loc'] = url
         qparams['keywords'] = keywords
+
+        #XXX: default version is 'unspecified'
+        if version != '':
+            qparams['version'] = version
 
         req_params = urlencode(qparams, True)
         req_url = urljoin(self.base, self.config['urls']['post'])

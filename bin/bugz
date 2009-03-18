@@ -6,6 +6,7 @@
 
 import os
 import commands
+import re
 
 from optparse import OptionParser, make_option, BadOptionError
 from urlparse import urljoin
@@ -206,7 +207,7 @@ def modify_opt_invalid(opt, opt_str, val, parser):
 class PrettyBugz(Bugz):
     options = {
         'base': make_option('-b', '--base', type='string',
-                            default = 'http://bugs.gentoo.org/',
+                            default = 'https://bugs.gentoo.org/',
                             help = 'Base URL of Bugzilla'),
         'user': make_option('-u', '--user', type='string',
                             help = 'Username for commands requiring authentication'),
@@ -479,9 +480,9 @@ class PrettyBugz(Bugz):
                                 help = 'Do not show comments'),
     }
 
-    def post(self, title = None, description = None, assigned_to = None,
+    def post(self, product = None, component = None, title = None, description = None, assigned_to = None,
              cc = None, url = None, keywords = None, extra_info = None,
-             description_from = None):
+             description_from = None, version = None):
         """Post a new bug"""
         # As we are submitting something, we should really
         # grab entry from console rather than from the command line:
@@ -495,6 +496,27 @@ class PrettyBugz(Bugz):
         #  XXX: We use "if not <field>" for mandatory fields
         #       and "if <field> is None" for optional ones.
         #
+
+        # check for product
+        if not product:
+            while not product or len(product) < 1:
+                product = self.get_input('Enter product: ')
+        else:
+            self.log('Enter product: %s' % product)
+
+        # check for component
+        if not component:
+            while not component or len(component) < 1:
+                component = self.get_input('Enter component: ')
+        else:
+            self.log('Enter component: %s' % component)
+
+        # check for version
+        # FIXME: This default behaviour is not too nice.
+        if version is None:
+            version = self.get_input('Enter version (default: unspecified): ')
+        else:
+            self.log('Enter version: %s' % version)
 
         # check for title
         if not title:
@@ -547,6 +569,9 @@ class PrettyBugz(Bugz):
 
         # print submission confirmation
         print '-' * (self.columns - 1)
+        print 'Product     : ' + product
+        print 'Component   : ' + component
+        print 'Version     : ' + version
         print 'Title       : ' + title
         print 'URL         : ' + url
         print 'Assigned to : ' + assigned_to
@@ -565,7 +590,6 @@ class PrettyBugz(Bugz):
                     extra_info += extra + ';'
 
         if extra_info is not None and extra_info != '':
-            import commands
             self.log('Getting extra info output...')
             self.debug('Extra info command: %s' % extra_info)
             description += '\n' + commands.getoutput(extra_info)
@@ -576,7 +600,7 @@ class PrettyBugz(Bugz):
             return
 
 
-        result = Bugz.post(self, title, description, url, assigned_to, cc, keywords)
+        result = Bugz.post(self, product, component, title, description, url, assigned_to, cc, keywords, version)
         if result != None:
             self.log('Bug %d submitted' % result)
         else:
@@ -584,6 +608,9 @@ class PrettyBugz(Bugz):
 
     post.args = "[options]"
     post.options = {
+        'product': make_option('--product', help = 'Product'),
+        'component': make_option('--component', help = 'Component'),
+        'version': make_option('--version', help = 'Version of the component'),
         'title': make_option('-t', '--title', help = 'Title of bug'),
         'description': make_option('-d', '--description',
                                    help = 'Description of the bug'),
